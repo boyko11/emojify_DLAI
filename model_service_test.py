@@ -8,7 +8,7 @@ class ModelServiceTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.words, cls.index_to_words, cls.word_to_vec_map = read_glove_vecs('data/glove.6B.50d.txt')
+        cls.word_to_index, cls.index_to_words, cls.word_to_vec_map = read_glove_vecs('data/glove.6B.50d.txt')
         cls.model_service = ModelService()
 
     def test_sentence_to_avg(self):
@@ -189,6 +189,23 @@ class ModelServiceTest(unittest.TestCase):
                                      [ 2.], ])
 
         self.assertTrue(np.array_equal(pred, expected_pred))
+
+    def test_sentences_to_indices(self):
+
+        X1 = np.array(["funny lol", "lets play baseball", "food is ready for you"])
+        X1_indices = self.model_service.sentences_to_indices(X1, self.word_to_index, max_len=5)
+        print("X1 =", X1)
+        print("X1_indices =\n", X1_indices)
+
+        X1_expected = np.array(['funny lol', 'lets play baseball', 'food is ready for you'])
+        X1_indices_expected = np.array([
+            [155345., 225122., 0.,     0.,      0.],
+            [220930., 286375., 69714., 0.,      0.],
+            [151204., 192973., 302254., 151349., 394475.]
+        ])
+
+        self.assertTrue(np.array_equal(X1_expected, X1))
+        self.assertTrue(np.array_equal(X1_indices_expected, X1_indices))
 
 
 if __name__ == '__main__':
