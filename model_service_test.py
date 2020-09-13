@@ -1,5 +1,5 @@
 import unittest
-from emo_utils import read_glove_vecs
+from emo_utils import read_glove_vecs, read_csv
 from model_service import ModelService
 import numpy as np
 
@@ -27,6 +27,168 @@ class ModelServiceTest(unittest.TestCase):
         ), 3)
 
         self.assertListEqual(expected_avg.tolist(), avg.tolist())
+
+    def test_model(self):
+
+        X_train, Y_train = read_csv('data/train_emoji.csv')
+        print(X_train.shape)
+        print(Y_train.shape)
+        print(np.eye(5)[Y_train.reshape(-1)].shape)
+        print(X_train[0])
+        print(type(X_train))
+        Y = np.asarray([5, 0, 0, 5, 4, 4, 4, 6, 6, 4, 1, 1, 5, 6, 6, 3, 6, 3, 4, 4])
+        print(Y.shape)
+
+        X = np.asarray(['I am going to the bar tonight', 'I love you', 'miss you my dear',
+                        'Lets go party and drinks', 'Congrats on the new job', 'Congratulations',
+                        'I am so happy for you', 'Why are you feeling bad', 'What is wrong with you',
+                        'You totally deserve this prize', 'Let us go play football',
+                        'Are you down for football this afternoon', 'Work hard play harder',
+                        'It is suprising how people can be dumb sometimes',
+                        'I am very disappointed', 'It is the best day in my life',
+                        'I think I will end up alone', 'My life is so boring', 'Good job',
+                        'Great so awesome'])
+
+        print(X.shape)
+        print(np.eye(5)[Y_train.reshape(-1)].shape)
+        print(type(X_train))
+
+        pred, W, b = self.model_service.model(X_train, Y_train, self.word_to_vec_map)
+
+        expected_pred = np.array([[ 3.],
+                                     [ 2.],
+                                     [ 3.],
+                                     [ 0.],
+                                     [ 4.],
+                                     [ 0.],
+                                     [ 3.],
+                                     [ 2.],
+                                     [ 3.],
+                                     [ 1.],
+                                     [ 3.],
+                                     [ 3.],
+                                     [ 1.],
+                                     [ 3.],
+                                     [ 2.],
+                                     [ 3.],
+                                     [ 2.],
+                                     [ 3.],
+                                     [ 1.],
+                                     [ 2.],
+                                     [ 3.],
+                                     [ 0.],
+                                     [ 2.],
+                                     [ 2.],
+                                     [ 2.],
+                                     [ 1.],
+                                     [ 4.],
+                                     [ 3.],
+                                     [ 3.],
+                                     [ 4.],
+                                     [ 0.],
+                                     [ 3.],
+                                     [ 4.],
+                                     [ 2.],
+                                     [ 0.],
+                                     [ 3.],
+                                     [ 2.],
+                                     [ 2.],
+                                     [ 3.],
+                                     [ 4.],
+                                     [ 2.],
+                                     [ 2.],
+                                     [ 0.],
+                                     [ 2.],
+                                     [ 3.],
+                                     [ 0.],
+                                     [ 3.],
+                                     [ 2.],
+                                     [ 4.],
+                                     [ 3.],
+                                     [ 0.],
+                                     [ 3.],
+                                     [ 3.],
+                                     [ 3.],
+                                     [ 4.],
+                                     [ 2.],
+                                     [ 1.],
+                                     [ 1.],
+                                     [ 1.],
+                                     [ 2.],
+                                     [ 3.],
+                                     [ 1.],
+                                     [ 0.],
+                                     [ 0.],
+                                     [ 0.],
+                                     [ 3.],
+                                     [ 4.],
+                                     [ 4.],
+                                     [ 2.],
+                                     [ 2.],
+                                     [ 1.],
+                                     [ 2.],
+                                     [ 0.],
+                                     [ 3.],
+                                     [ 2.],
+                                     [ 2.],
+                                     [ 0.],
+                                     [ 3.],
+                                     [ 3.],
+                                     [ 1.],
+                                     [ 2.],
+                                     [ 1.],
+                                     [ 2.],
+                                     [ 2.],
+                                     [ 4.],
+                                     [ 3.],
+                                     [ 3.],
+                                     [ 2.],
+                                     [ 4.],
+                                     [ 0.],
+                                     [ 0.],
+                                     [ 3.],
+                                     [ 3.],
+                                     [ 3.],
+                                     [ 3.],
+                                     [ 2.],
+                                     [ 0.],
+                                     [ 1.],
+                                     [ 2.],
+                                     [ 3.],
+                                     [ 0.],
+                                     [ 2.],
+                                     [ 2.],
+                                     [ 2.],
+                                     [ 3.],
+                                     [ 2.],
+                                     [ 2.],
+                                     [ 2.],
+                                     [ 4.],
+                                     [ 1.],
+                                     [ 1.],
+                                     [ 3.],
+                                     [ 3.],
+                                     [ 4.],
+                                     [ 1.],
+                                     [ 2.],
+                                     [ 1.],
+                                     [ 1.],
+                                     [ 3.],
+                                     [ 1.],
+                                     [ 0.],
+                                     [ 4.],
+                                     [ 0.],
+                                     [ 3.],
+                                     [ 3.],
+                                     [ 4.],
+                                     [ 4.],
+                                     [ 1.],
+                                     [ 4.],
+                                     [ 3.],
+                                     [ 0.],
+                                     [ 2.], ])
+
+        self.assertTrue(np.array_equal(pred, expected_pred))
 
 
 if __name__ == '__main__':
