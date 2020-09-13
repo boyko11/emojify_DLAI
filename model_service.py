@@ -20,18 +20,15 @@ class ModelService:
         avg -- average vector encoding information about the sentence, numpy-array of shape (50,)
         """
 
-        ### START CODE HERE ###
         # Step 1: Split sentence into list of lower case words (≈ 1 line)
         words = sentence.lower().split()
 
         # Initialize the average word vector, should have the same shape as your word vectors.
-        avg = np.zeros(shape=word_to_vec_map[words[0]].shape)
+        total = np.zeros(shape=word_to_vec_map[words[0]].shape)
 
         # Step 2: average the word vectors. You can loop over the words in the list "words".
         for w in words:
-            avg = avg + word_to_vec_map[w]
-        avg = avg / float(len(words))
-
-        ### END CODE HERE ###
+            total += word_to_vec_map[w]
+        avg = total / float(len(words))
 
         return avg
