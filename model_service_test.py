@@ -207,6 +207,13 @@ class ModelServiceTest(unittest.TestCase):
         self.assertTrue(np.array_equal(X1_expected, X1))
         self.assertTrue(np.array_equal(X1_indices_expected, X1_indices))
 
+    def test_pretrained_embedding_layer(self):
+
+        embedding_layer = self.model_service.pretrained_embedding_layer(self.word_to_vec_map, self.word_to_index)
+        print("weights[0][1][3] =", embedding_layer.get_weights()[0][1][3])
+
+        self.assertAlmostEqual(-0.3403, embedding_layer.get_weights()[0][1][3])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,8 +1,5 @@
-import numpy as np
 from emo_utils import *
-import emoji
-import matplotlib.pyplot as plt
-
+from model_service import ModelService
 
 if __name__ == '__main__':
 
@@ -11,21 +8,35 @@ if __name__ == '__main__':
 
     maxLen = len(max(X_train, key=len).split())
 
-    for idx in range(10):
-        print(X_train[idx], label_to_emoji(Y_train[idx]))
-
-    Y_oh_train = convert_to_one_hot(Y_train, C=5)
-    Y_oh_test = convert_to_one_hot(Y_test, C=5)
-
-    idx = 50
-    print(f"Sentence '{X_train[50]}' has label index {Y_train[idx]}, which is emoji {label_to_emoji(Y_train[idx])}", )
-    print(f"Label index {Y_train[idx]} in one-hot encoding format is {Y_oh_train[idx]}")
-
     word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('data/glove.6B.50d.txt')
 
-    word = "cucumber"
-    idx = 289846
-    print("the index of", word, "in the vocabulary is", word_to_index[word])
-    print("the", str(idx) + "th word in the vocabulary is", index_to_word[idx])
+    model_service = ModelService()
+
+    model = model_service.Emojify_V2((maxLen,), word_to_vec_map, word_to_index)
+    model.summary()
+
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    X_train_indices = model_service.sentences_to_indices(X_train, word_to_index, maxLen)
+    Y_train_oh = convert_to_one_hot(Y_train, C=5)
+
+    model.fit(X_train_indices, Y_train_oh, epochs=50, batch_size=32, shuffle=True)
+
+    X_test_indices = model_service.sentences_to_indices(X_test, word_to_index, max_len=maxLen)
+    Y_test_oh = convert_to_one_hot(Y_test, C=5)
+    loss, acc = model.evaluate(X_test_indices, Y_test_oh)
+    print()
+    print("Test accuracy = ", acc)
+
+    C = 5
+    y_test_oh = np.eye(C)[Y_test.reshape(-1)]
+    X_test_indices = model_service.sentences_to_indices(X_test, word_to_index, maxLen)
+    pred = model.predict(X_test_indices)
+    for i in range(len(X_test)):
+        x = X_test_indices
+        num = np.argmax(pred[i])
+        if (num != Y_test[i]):
+            print('Expected emoji:' + label_to_emoji(Y_test[i]) + ' prediction: ' + X_test[i] + label_to_emoji(
+                num).strip())
 
 
